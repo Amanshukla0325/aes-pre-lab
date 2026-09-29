@@ -3,6 +3,8 @@ import sys
 import subprocess
 import streamlit as st
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 st.set_page_config(page_title="CareGrid AES-PRE Lab", layout="wide")
 st.title("CareGrid: Zero-Trust Medical Study Re-Encryption")
 st.caption("Interactive Pipeline Runner & Artifact Inspector")
@@ -13,7 +15,12 @@ os.makedirs("payloads", exist_ok=True)
 
 def run_script(script_path: str):
     # sys.executable ensures the script runs in the active virtual environment
-    res = subprocess.run([sys.executable, script_path], capture_output=True, text=True)
+    res = subprocess.run(
+        [sys.executable, os.path.join(ROOT_DIR, script_path)],
+        capture_output=True,
+        text=True,
+        cwd=ROOT_DIR,
+    )
     if res.returncode == 0:
         st.success(f"`{script_path}` executed successfully.")
         st.code(res.stdout, language="text")
